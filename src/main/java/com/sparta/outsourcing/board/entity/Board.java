@@ -2,6 +2,7 @@ package com.sparta.outsourcing.board.entity;
 
 import com.sparta.outsourcing.comment.entity.Comment;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,6 +36,13 @@ public class Board extends Timestamped {
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
+
+    @Builder
+    public Board(String title, String content, String generatedname) {
+        this.title = title;
+        this.content = content;
+        this.generatedname = generatedname;
+    }
 
     public void decreaseLike() {
         this.like--;

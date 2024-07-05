@@ -1,13 +1,12 @@
 package com.sparta.outsourcing.user.service;
 
+import com.sparta.outsourcing.board.repository.BoardRepository;
+import com.sparta.outsourcing.comment.repository.CommentRepository;
 import com.sparta.outsourcing.config.JwtUtil;
 import com.sparta.outsourcing.exception.*;
+import com.sparta.outsourcing.like.repository.LikeRepository;
 import com.sparta.outsourcing.security.UserDetailsImpl;
-import com.sparta.outsourcing.user.dto.SignupRequestDto;
-import com.sparta.outsourcing.user.dto.WithdrawRequestDto;
-import com.sparta.outsourcing.user.dto.UpdatePasswordDto;
-import com.sparta.outsourcing.user.dto.UpdateUserRequestDto;
-import com.sparta.outsourcing.user.dto.UserResponseDto;
+import com.sparta.outsourcing.user.dto.*;
 import com.sparta.outsourcing.user.entity.User;
 import com.sparta.outsourcing.user.entity.UserStatus;
 import com.sparta.outsourcing.user.repository.UserRepository;
@@ -27,6 +26,9 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final LikeRepository likeRepository;
+    private final BoardRepository boardRepository;
+    private final CommentRepository commentRepository;
 
     public void signup(SignupRequestDto requestDto) {
         String password = passwordEncoder.encode(requestDto.getPassword());
@@ -83,9 +85,10 @@ public class UserService {
         return passwordEncoder.matches(requestDto.getPassword(), userDetails.getUser().getPassword());
     }
 
-
-    public UserResponseDto getUser(User user) {
-        return new UserResponseDto(user);
+    public UserLikeResponseDto getUser(User user) {
+        Long boardLikeCount = boardRepository.boardLikeCount(user.getId());
+        Long commentLikeCount = commentRepository.commentLikeCount(user.getId());
+        return new UserLikeResponseDto(user, boardLikeCount, commentLikeCount);
     }
 
     @Transactional

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,29 +42,16 @@ public class BoardService {
         return savedBoard.getId();
     }
 
-    public BoardListResponseDto getAllBoards(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        Page<Board> boardPage = boardRepository.findAll(pageable);
+    public List<BoardListResponseDto> getBoardListWithPage(int page, int size) {
 
-        if (page > 0 && page >= boardPage.getTotalPages()) { //잘못된 페이지 요청 시 예외 처리
-            throw new NotFoundException("해당 페이지를 찾을 수 없습니다.");
-        }
+        PageRequest pageRequest = PageRequest.of(page, size);
 
-        List<BoardListResponseDto.BoardData> boardDataList = boardPage.getContent().stream()
-                .map(board -> new BoardListResponseDto.BoardData(
-                        board.getId(),
-                        board.getTitle(),
-                        board.getGeneratedname(),
-                        board.getUpdatedAt()
-                ))
-                .collect(Collectors.toList());
+        List<Board> boardPageList = boardRepository.getBoardListWithPage(
+                pageRequest.getOffset(), pageRequest.getPageSize());
 
-        if (boardDataList.isEmpty()) { //빈 페이지 메시지
-            return new BoardListResponseDto(200, "현재 페이지에 게시글이 없습니다.", boardDataList);
-        }
-
-        return new BoardListResponseDto(200, "전체 게시글 조회 성공", boardDataList);
+        return boardPageList.stream().map(BoardListResponseDto::new).toList();
     }
+
     public BoardDetailResponseDto getBoardDetail(Long boardId) {
         Optional<Board> optionalBoard = boardRepository.findById(boardId);
         if (optionalBoard.isPresent()) {
@@ -116,4 +104,6 @@ public class BoardService {
             throw new ForbiddenException("해당 게시글의 작성자입니다.");
         }
     }
+
+
 }

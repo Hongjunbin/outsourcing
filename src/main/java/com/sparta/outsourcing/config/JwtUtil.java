@@ -50,7 +50,7 @@ public class JwtUtil {
                         .compact();
     }
 
-    public String createToken2(User user, long tokenTime) {
+    public String createRefreshToken(User user, long tokenTime) {
         Date date = new Date();
 
         return BEARER_PREFIX +
@@ -68,7 +68,7 @@ public class JwtUtil {
     }
 
     public String createRefreshToken(User user) {
-        return createToken2(user, REFRESH_TOKEN_TIME);
+        return createRefreshToken(user, REFRESH_TOKEN_TIME);
     }
 
     public String getJwtFromHeader(HttpServletRequest request) {

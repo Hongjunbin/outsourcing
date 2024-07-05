@@ -5,7 +5,10 @@ public enum LikeType {
     BOARD(ContentType.BOARD);
 
     private final String contentType;
-    LikeType(String contentType) {this.contentType = contentType; }
+
+    LikeType(String contentType) {
+        this.contentType = contentType;
+    }
 
     public static class ContentType{
         public static final String COMMENT = "COMMENT";
