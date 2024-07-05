@@ -28,7 +28,7 @@ public class Board extends Timestamped {
     private String content;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column(name = "likes")
@@ -38,10 +38,11 @@ public class Board extends Timestamped {
     private List<Comment> comments;
 
     @Builder
-    public Board(String title, String content, String generatedname) {
+    public Board(String title, String content, String generatedname, User user) {
         this.title = title;
         this.content = content;
         this.generatedname = generatedname;
+        this.user = user;
     }
 
     public void decreaseLike() {

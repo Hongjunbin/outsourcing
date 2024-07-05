@@ -12,7 +12,7 @@ import com.sparta.outsourcing.user.dto.UpdateUserRequestDto;
 
 @Entity
 @Getter
-@Table(name = "user")
+@Table(name = "users")
 @NoArgsConstructor
 public class User extends Timestamped {
     @Id
@@ -37,6 +37,15 @@ public class User extends Timestamped {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserStatus role;
+
+    @Builder
+    public User(String userUid, String password, String username, String intro, UserStatus role) {
+        this.userUid = userUid;
+        this.password = password;
+        this.username = username;
+        this.intro = intro;
+        this.role = role;
+    }
 
     public User(SignupRequestDto requestDto, String password) {
         this.userUid = requestDto.getUserUid();
